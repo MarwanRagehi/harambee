@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PostsSeeder::class);
         $this->call(RewardsSeeder::class);
         $this->call(UpdatesSeeder::class);
+        $this->call(ContentBlockSeeder::class);
     }
 }

@@ -81,6 +81,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('content_blocks') }}" class="nav-link text-white align-middle px-0">
+                        <i class="fa fa-th-large"></i> <span class="ms-1 d-none d-sm-inline">{{ __('site.content_blocks_menu') }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{route('users')}}" class="nav-link text-white align-middle px-0">
                         <i class="fa fa-users"></i>
                         <span class="ms-1 d-none d-sm-inline">@lang('app.users')</span>

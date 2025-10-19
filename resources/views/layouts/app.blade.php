@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@php($direction = app()->getLocale() === 'ar' ? 'rtl' : 'ltr')
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $direction }}">
 	<head>
 	    <meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,8 +40,8 @@
         ]) !!};
         </script>
 	</head>
-	<body>
-	    <div id="app" class="page-container">
+        <body class="locale-{{ app()->getLocale() }}">
+            <div id="app" class="page-container">
 	            @yield('content-wrapper')
 		</div>
 

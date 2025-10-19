@@ -1,83 +1,48 @@
 
 
-    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+    @php($locale = app()->getLocale())
+    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm main-navbar">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                @if(get_option('logo_settings') == 'show_site_name')
-                    {{ get_option('site_name') }}
-                @else
-                    @if(logo_url())
-                        <img class="main-logo" src="{{ logo_url() }}" />
-                    @else
-                        {{ get_option('site_name') }}
-                    @endif
-                @endif
+            <a class="navbar-brand fw-bold" href="{{ url('/') }}">
+                {{ get_option('site_name', __('site.home_title')) }}
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAssociation" aria-controls="navbarAssociation" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav">
-                    <?php
-                    $header_menu_pages = \App\Models\Post::whereStatus('1')->where('show_in_header_menu', 1)->get();
-                    ?>
-                    @if($header_menu_pages->count() > 0)
-                        @foreach($header_menu_pages as $page)
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('single_page', $page->slug) }}">{{ $page->title }} </a>
-                            </li>
-                        @endforeach
-                    @endif
+            <div class="collapse navbar-collapse" id="navbarAssociation">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#about">{{ __('site.navbar_about') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#programs">{{ __('site.navbar_programs') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#mission">{{ __('site.navbar_mission') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#news">{{ __('site.navbar_news') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">{{ __('site.navbar_contact') }}</a></li>
                 </ul>
-                <form action="{{route('search')}}" method="get">
-                    <input class="form-control" type="text" name="q" placeholder="@lang('app.search_campaigns')" aria-label="@lang('app.search_campaigns')">
-                </form>
 
-                <!-- Right Side Of Navbar -->
-                <ul class="navbar-nav ms-auto">
-                    
-                    <li class="nav-item">
-                        <a href="{{route('start_campaign')}}" class=" btn btn-info rounded-pill text-white">
-                            @lang('app.start_a_campaign')
+                <ul class="navbar-nav ms-auto align-items-md-center">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="localeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-globe"></i> {{ strtoupper($locale) }}
                         </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="localeDropdown">
+                            @foreach($availableLocales as $code => $language)
+                                <li>
+                                    <a class="dropdown-item @if($code === $locale) active @endif" href="{{ route('locale.switch', $code) }}">
+                                        {{ $language['native'] }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
                     </li>
-                    <!-- Authentication Links -->
-                    @guest
-                        @if (Route::has('login'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                        @endif
-
-                        @if (Route::has('register'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                            </li>
-                        @endif
-                    @else
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                <i class="fa fa-user"></i> {{ Auth::user()->name }}
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{route('dashboard')}}">
-                                    <i class="fa fa-dashboard"></i> @lang('app.dashboard') 
-                                </a>
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashboard') }}"><i class="fa fa-lock"></i> @lang('app.dashboard')</a>
                         </li>
-                    @endguest
+                    @else
+                        @if (Route::has('login'))
+                            <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"><i class="fa fa-lock"></i> {{ __('Login') }}</a></li>
+                        @endif
+                    @endauth
                 </ul>
             </div>
         </div>
