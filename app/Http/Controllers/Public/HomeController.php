@@ -10,6 +10,7 @@ use App\Mail\ContactUsSendToSender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -31,10 +32,12 @@ class HomeController extends Controller
     public function index(){
         $title = __('site.home_title');
 
-        $contentBlocks = ContentBlock::where('is_active', true)
-            ->orderBy('display_order')
-            ->get()
-            ->groupBy('section');
+        $contentBlocks = Cache::rememberForever(ContentBlock::cacheKey(), function () {
+            return ContentBlock::where('is_active', true)
+                ->orderBy('display_order')
+                ->get()
+                ->groupBy('section');
+        });
 
         return view('public.home', compact('title', 'contentBlocks'));
     }

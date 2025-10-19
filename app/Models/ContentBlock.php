@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class ContentBlock extends Model
@@ -36,6 +37,27 @@ class ContentBlock extends Model
         'metadata' => 'array',
         'is_active' => 'boolean',
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(function (): void {
+            static::flushCache();
+        });
+
+        static::deleted(function (): void {
+            static::flushCache();
+        });
+    }
+
+    public static function cacheKey(): string
+    {
+        return 'content_blocks.active_grouped';
+    }
+
+    public static function flushCache(): void
+    {
+        Cache::forget(static::cacheKey());
+    }
 
     public function translate(string $field, ?string $locale = null): ?string
     {
