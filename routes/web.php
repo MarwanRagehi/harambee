@@ -20,6 +20,7 @@
 Auth::routes();
 
 Route::get('/', 'Public\HomeController@index')->name('home');
+Route::get('locale/{locale}', 'Public\LocaleController@switch')->name('locale.switch');
 Route::get('clear', 'Public\HomeController@clearCache')->name('clear_cache');//check it
 Route::post('cookie-accept', ['as' => 'cookie_accept','uses' => 'Public\HomeController@acceptCookie']);
 Route::get('p/{slug}', ['as' => 'single_page', 'uses' => 'Public\HomeController@showPage']);
@@ -161,6 +162,12 @@ Route::group(['prefix'=>'dashboard', 'middleware' => ['admin','auth']], function
         Route::get('edit/{id}', ['as'=>'edit_categories', 'uses' => 'Admin\CategoriesController@edit']);
         Route::post('edit/{id}', ['uses' => 'Admin\CategoriesController@update']);
         Route::post('delete-categories', ['as'=>'delete_categories', 'uses' => 'Admin\CategoriesController@destroy']);
+    });
+
+    Route::group(['prefix' => 'content-blocks'], function () {
+        Route::get('/', ['as' => 'content_blocks', 'uses' => 'Admin\ContentBlockController@index']);
+        Route::get('edit/{contentBlock}', ['as' => 'content_blocks_edit', 'uses' => 'Admin\ContentBlockController@edit']);
+        Route::post('edit/{contentBlock}', ['uses' => 'Admin\ContentBlockController@update']);
     });
 
     // Campaigns

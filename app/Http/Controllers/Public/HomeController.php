@@ -3,17 +3,13 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Campaign;
-use App\Models\Category;
+use App\Models\ContentBlock;
 use App\Models\Post;
 use App\Mail\ContactUs;
 use App\Mail\ContactUsSendToSender;
-use App\Models\Payment;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 
 class HomeController extends Controller
 {
@@ -33,19 +29,14 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(){
-        $title = get_option('banner_main_header');
-        
-        $categories = Category::orderBy('category_name', 'asc')->take(8)->get();
-        $new_campaigns = Campaign::active()->orderBy('id', 'desc')->paginate(8);
-        $funded_campaigns = Campaign::active()->funded()->orderBy('id', 'desc')->take(8)->get();
-        
-        $new_campaigns->withPath('ajax/new-campaigns');
+        $title = __('site.home_title');
 
-        $campaigns_count = Campaign::all()->count();
-        $users_count = User::all()->count();
-        $fund_raised_count = Payment::whereStatus('success')->sum('amount');
+        $contentBlocks = ContentBlock::where('is_active', true)
+            ->orderBy('display_order')
+            ->get()
+            ->groupBy('section');
 
-        return view('public.home', compact('title','categories', 'new_campaigns', 'funded_campaigns', 'campaigns_count', 'users_count', 'fund_raised_count'));
+        return view('public.home', compact('title', 'contentBlocks'));
     }
     
     public function showPage($slug){
